@@ -1,11 +1,12 @@
 package hu.benjaminhalasz;
 
-import com.vaadin.flow.component.dependency.CssImport;
+
+import com.vaadin.annotations.StyleSheet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@StyleSheet("style.css")
 @SpringBootApplication
-@CssImport("styles/my-custom.css")
 public class DatabaseApplication {
     
     
