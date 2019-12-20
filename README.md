@@ -7,4 +7,4 @@ Run the program:
 - mvn install
 - cd target
 - java -jar database-0.0.1-SNAPSHOT.jar
-- visit https://localhost:8080
+- visit http://localhost:8080
