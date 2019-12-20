@@ -1,5 +1,6 @@
 # Simple_CRUD
 MySQL, Vaadin, Spring Boot
+https://travis-ci.org/HuserB8927/Simple_CRUD.svg?branch=master
 
 Run the program:
 
