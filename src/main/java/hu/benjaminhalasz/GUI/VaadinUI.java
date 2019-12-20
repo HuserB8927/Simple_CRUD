@@ -47,6 +47,10 @@ public class VaadinUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
+        applicants = new Applicants(null, "","","","","","");
+        binder.setBean(applicants);
+        addApplicants();
+        
         updateGrid();
 
         grid.setColumns("id", "surname", "firstName", "phone", "email", "country", "birthDate");
