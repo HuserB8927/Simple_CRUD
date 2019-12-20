@@ -38,8 +38,8 @@ public class VaadinUI extends UI {
     private Button add = new Button("Add", e -> addApplicants());
     private Button addContact = new Button("Add Contact");
     private TextField filterText = new TextField();
-    private Button deleteContact = new Button("Delete Contact", e -> deleteAll());
-    private Button clearDatabase = new Button("Clear Database");
+    private Button deleteContact = new Button("Delete Contact");
+    private Button clearDatabase = new Button("Clear Database", e -> deleteAll());
     private Button export = new Button("Export Database");
     
     @Override
