@@ -28,7 +28,7 @@ public class VaadinUI extends UI {
 
     private Binder<Applicants> binder = new Binder<>(Applicants.class);
 
-    private ApplicationForm form;
+    
 
     private Grid<Applicants> grid = new Grid(Applicants.class);
     private TextField surname = new TextField("Suername");
@@ -39,9 +39,9 @@ public class VaadinUI extends UI {
     private TextField birthDate = new TextField("Birthdate");
     private Button save = new Button("Save", e -> saveApplicants());
     private Button add = new Button("Add", e -> addApplicants());
+    private Button delete = new Button("Delete", e -> deleteApplicants());
     private Button addContact = new Button("Add Contact");
     private TextField filterText = new TextField();
-    private Button deleteContact = new Button("Delete Contact");
     private Button clearDatabase = new Button("Clear Database", e -> deleteAll());
     private Button export = new Button("Export Database");
 
@@ -72,32 +72,31 @@ public class VaadinUI extends UI {
         
 
 
-        HorizontalLayout actions = new HorizontalLayout(filterText, addContact,
-                deleteContact, clearDatabase, export);
+        HorizontalLayout actions = new HorizontalLayout(filterText, addContact, clearDatabase, export);
 
-        HorizontalLayout saveAdd = new HorizontalLayout(save, add);
+        HorizontalLayout saveAdd = new HorizontalLayout(save, add, delete);
 
         VerticalLayout layout = new VerticalLayout(actions, grid,
                 surname, firstName, phone, email, country, birthDate, saveAdd);
         
         
-        TextField newSurname = new TextField("Surname");
-        binder.forField(newSurname).bind(Applicants::getSurname, Applicants::setSurname);
-        TextField newFirstName = new TextField("First name");
-        binder.forField(newFirstName).bind(Applicants::getFirstName, Applicants::setFirstName);
-        TextField newPhone = new TextField("Phone");
-        binder.forField(newPhone).bind(Applicants::getPhone, Applicants::setPhone);
-        final TextField newEmail = new TextField("Email");
-        binder.forField(newEmail)
-                .withValidator(new EmailValidator("Are you sure the given value is an email address?"))
-                .bind(Applicants::getEmail, Applicants::setEmail);
-        TextField newCountry = new TextField("Country");
-        binder.forField(newCountry).bind(Applicants::getCountry, Applicants::setCountry);
-        TextField newBirthDate = new TextField("Birthdate");
-        binder.forField(newBirthDate).bind(Applicants::getBirthDate, Applicants::setBirthDate);
-        FormLayout form = new FormLayout(newSurname, newFirstName, newPhone, newEmail, newCountry, newBirthDate);
-        
-        HorizontalLayout finalLayout = new HorizontalLayout(form);
+//        TextField newSurname = new TextField("Surname");
+//        binder.forField(newSurname).bind(Applicants::getSurname, Applicants::setSurname);
+//        TextField newFirstName = new TextField("First name");
+//        binder.forField(newFirstName).bind(Applicants::getFirstName, Applicants::setFirstName);
+//        TextField newPhone = new TextField("Phone");
+//        binder.forField(newPhone).bind(Applicants::getPhone, Applicants::setPhone);
+//        final TextField newEmail = new TextField("Email");
+//        binder.forField(newEmail)
+//                .withValidator(new EmailValidator("Are you sure the given value is an email address?"))
+//                .bind(Applicants::getEmail, Applicants::setEmail);
+//        TextField newCountry = new TextField("Country");
+//        binder.forField(newCountry).bind(Applicants::getCountry, Applicants::setCountry);
+//        TextField newBirthDate = new TextField("Birthdate");
+//        binder.forField(newBirthDate).bind(Applicants::getBirthDate, Applicants::setBirthDate);
+//        FormLayout form = new FormLayout(newSurname, newFirstName, newPhone, newEmail, newCountry, newBirthDate);
+//        
+//        HorizontalLayout finalLayout = new HorizontalLayout(form);
         
         layout.setSpacing(true);
         setContent(layout);
@@ -136,6 +135,7 @@ public class VaadinUI extends UI {
         birthDate.setVisible(visible);
         save.setVisible(visible);
         add.setVisible(visible);
+        delete.setVisible(visible);
 
     }
 
@@ -179,5 +179,9 @@ public class VaadinUI extends UI {
         }
 
     }
+    public void deleteApplicants() {
+        service.delete(applicants);
+        updateGrid();
     
+}
 }

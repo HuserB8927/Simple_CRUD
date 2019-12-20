@@ -48,5 +48,9 @@ public class ApplicantsService {
         jdbcTemplate.update(sql);
     
     }
+    public void delete(Applicants applicants) {
+        String sql = "DELETE FROM applicants WHERE id=?";
+        jdbcTemplate.update(sql, applicants.getId());
+    }
     
 }
