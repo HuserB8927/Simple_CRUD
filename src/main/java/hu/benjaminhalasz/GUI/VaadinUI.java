@@ -49,7 +49,7 @@ public class VaadinUI extends UI {
     protected void init(VaadinRequest request) {
         applicants = new Applicants(null, "","","","","","");
         binder.setBean(applicants);
-        addApplicants();
+       
         
         updateGrid();
 
