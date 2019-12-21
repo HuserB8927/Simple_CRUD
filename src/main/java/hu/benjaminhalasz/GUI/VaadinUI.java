@@ -4,14 +4,12 @@ import hu.benjaminhalasz.Controller.ApplicantsService;
 import hu.benjaminhalasz.Model.Applicants;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.flow.component.dependency.CssImport;
-
-
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.ui.Window;
 
 
 
@@ -22,13 +20,11 @@ import java.util.List;
 public class VaadinUI extends UI {
 
     @Autowired
-    private ApplicantsService service;
+    private ApplicantsService service = ApplicantsService.getInstance();
 
     private Applicants applicants;
 
     private Binder<Applicants> binder = new Binder<>(Applicants.class);
-
-    
 
     private Grid<Applicants> grid = new Grid(Applicants.class);
     private TextField surname = new TextField("Suername");
@@ -49,7 +45,6 @@ public class VaadinUI extends UI {
     protected void init(VaadinRequest request) {
         applicants = new Applicants(null, "","","","","","");
         binder.setBean(applicants);
-       
         
         updateGrid();
 
@@ -59,9 +54,11 @@ public class VaadinUI extends UI {
         grid.addFooterRowAt(0);
 
         filterText.setPlaceholder("Filter text...");
-        //filterText.setClearButtonVisible(true); --> this doesnt want to work
+       // filterText.setClearButtonVisible(true); // --> this doesnt want to work
         filterText.setValueChangeMode(ValueChangeMode.EAGER); //ensures that change events are fired immediately when the user types.
-        filterText.addValueChangeListener(e -> filterByName());
+        filterText.addValueChangeListener(e -> filterDatas());
+        
+        
 
         addContact.setVisible(true);
         addContact.addClickListener(event -> addNewForm());
@@ -70,7 +67,9 @@ public class VaadinUI extends UI {
 
         binder.bindInstanceFields(this);
         
-
+        binder.forField(email)
+                .withValidator(new EmailValidator("Are you sure the given value is an email address?"))
+                .bind(Applicants::getEmail, Applicants::setEmail);
 
         HorizontalLayout actions = new HorizontalLayout(filterText, addContact, clearDatabase, export);
 
@@ -156,28 +155,10 @@ public class VaadinUI extends UI {
 
     }
 
-    private void filterByName() {
+    public void filterDatas() {
 
-        grid.setItems(service.findAll());
-
-    }
-
-    public void setApplicants(Applicants applicants) {
-
-        /*
-        setBean connects the values in the customer object to the corresponding 
-        input fields of the form. When the user changes the value of an input field, 
-        the value is set in the corresponding instance variable of the customer object.
-         */
-        binder.setBean(applicants);
-
-        if (applicants == null) { //when the customer is null the form is hidden
-            setVisible(false);
-        } else { //when it is not null, the form is shown, and keyboard focus is placed on the First name input field to allow immediate typing.
-            setVisible(true);
-            firstName.focus();
-        }
-
+        grid.setItems(service.findByInput(filterText.getValue()));
+        
     }
     public void deleteApplicants() {
         service.delete(applicants);

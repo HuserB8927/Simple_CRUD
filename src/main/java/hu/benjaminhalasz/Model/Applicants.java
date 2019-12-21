@@ -5,19 +5,21 @@
  */
 package hu.benjaminhalasz.Model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author benjaminhalasz
  */
-public class Applicants {
+public class Applicants implements Serializable, Cloneable {
     private Long id;
-    private String surname;
-    private String firstName;
-    private String phone;
-    private String email;
-    private String country;
-    private String birthDate;
-    private Applicants a;
+    private String surname = "";
+    private String firstName = "";
+    private String phone = "";
+    private String email = "";
+    private String country = "";
+    private String birthDate = "";
+    
     
     public Applicants(Long id, String surname, String firstName, String phone, String email, String country, String birthDate) {
         this.id = id;
@@ -85,5 +87,12 @@ public class Applicants {
     public String getBirthDate() {
         return birthDate;
     }
-    
+    @Override
+    public Applicants clone() throws CloneNotSupportedException {
+        return (Applicants) super.clone();
+    }
+    @Override
+    public String toString() {
+        return firstName + " " + surname;
+    }
 }
