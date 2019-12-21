@@ -11,4 +11,5 @@ Run the program:
 - java -jar database-0.0.1-SNAPSHOT.jar
 - visit http://localhost:8080
 
-![](images/Screenshot%202019-12-20%20at%2019.27.30.png)
+![](images/Screenshot%202019-12-21%20at%2011.01.15.png)
+![](images/Screenshot%202019-12-21%20at%2011.05.00.png)
