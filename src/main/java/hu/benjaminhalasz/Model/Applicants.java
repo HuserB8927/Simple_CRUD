@@ -6,6 +6,7 @@
 package hu.benjaminhalasz.Model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -13,12 +14,12 @@ import java.io.Serializable;
  */
 public class Applicants implements Serializable, Cloneable {
     private Long id;
-    private String surname = "";
-    private String firstName = "";
-    private String phone = "";
-    private String email = "";
-    private String country = "";
-    private String birthDate = "";
+    private String surname;
+    private String firstName;
+    private String phone;
+    private String email;
+    private String country;
+    private String birthDate;
     
     
     public Applicants(Long id, String surname, String firstName, String phone, String email, String country, String birthDate) {
@@ -94,5 +95,27 @@ public class Applicants implements Serializable, Cloneable {
     @Override
     public String toString() {
         return firstName + " " + surname;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (this.id == null) {
+            return false;
+        }
+
+        if (obj instanceof Applicants && obj.getClass().equals(getClass())) {
+            return this.id.equals(((Applicants) obj).id);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 43 * hash + Objects.hashCode(this.id);
+        return hash;
     }
 }

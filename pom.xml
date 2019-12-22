@@ -91,6 +91,12 @@
 	  <artifactId>vaadin-rich-text-editor-flow</artifactId>
 	  <version>2.0.0</version>
 	 </dependency>
+	 <dependency>
+	  <groupId>org.eclipse.persistence</groupId>
+	  <artifactId>javax.persistence</artifactId>
+	  <version>2.1.0</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<dependencyManagement>

@@ -4,12 +4,14 @@ import hu.benjaminhalasz.Controller.ApplicantsService;
 import hu.benjaminhalasz.Model.Applicants;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 
 
@@ -20,7 +22,7 @@ import java.util.List;
 public class VaadinUI extends UI {
 
     @Autowired
-    private ApplicantsService service = ApplicantsService.getInstance();
+    private ApplicantsService service;
 
     private Applicants applicants;
 
@@ -43,8 +45,8 @@ public class VaadinUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        applicants = new Applicants(null, "","","","","","");
-        binder.setBean(applicants);
+        applicants = new Applicants(null, "","","","","",""); //this way we have an empty object bound to the UI
+        binder.setBean(applicants); 
         
         updateGrid();
 
@@ -55,10 +57,16 @@ public class VaadinUI extends UI {
 
         filterText.setPlaceholder("Filter text...");
        // filterText.setClearButtonVisible(true); // --> this doesnt want to work
-        filterText.setValueChangeMode(ValueChangeMode.EAGER); //ensures that change events are fired immediately when the user types.
+        filterText.setValueChangeMode(ValueChangeMode.LAZY); //ensures that change events are fired immediately when the user types.
         filterText.addValueChangeListener(e -> filterDatas());
         
+        Button clearFilterTextBtn = new Button(VaadinIcons.CLOSE);
+        clearFilterTextBtn.setDescription("Clear the current filter...");
+        clearFilterTextBtn.addClickListener(e -> filterText.clear());
         
+        CssLayout filtering = new CssLayout();
+        filtering.addComponents(filterText, clearFilterTextBtn);
+        filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 
         addContact.setVisible(true);
         addContact.addClickListener(event -> addNewForm());
@@ -71,31 +79,15 @@ public class VaadinUI extends UI {
                 .withValidator(new EmailValidator("Are you sure the given value is an email address?"))
                 .bind(Applicants::getEmail, Applicants::setEmail);
 
-        HorizontalLayout actions = new HorizontalLayout(filterText, addContact, clearDatabase, export);
+        HorizontalLayout actions = new HorizontalLayout(filtering, addContact, clearDatabase, export);
 
         HorizontalLayout saveAdd = new HorizontalLayout(save, add, delete);
 
+        
+        
+        
         VerticalLayout layout = new VerticalLayout(actions, grid,
                 surname, firstName, phone, email, country, birthDate, saveAdd);
-        
-        
-//        TextField newSurname = new TextField("Surname");
-//        binder.forField(newSurname).bind(Applicants::getSurname, Applicants::setSurname);
-//        TextField newFirstName = new TextField("First name");
-//        binder.forField(newFirstName).bind(Applicants::getFirstName, Applicants::setFirstName);
-//        TextField newPhone = new TextField("Phone");
-//        binder.forField(newPhone).bind(Applicants::getPhone, Applicants::setPhone);
-//        final TextField newEmail = new TextField("Email");
-//        binder.forField(newEmail)
-//                .withValidator(new EmailValidator("Are you sure the given value is an email address?"))
-//                .bind(Applicants::getEmail, Applicants::setEmail);
-//        TextField newCountry = new TextField("Country");
-//        binder.forField(newCountry).bind(Applicants::getCountry, Applicants::setCountry);
-//        TextField newBirthDate = new TextField("Birthdate");
-//        binder.forField(newBirthDate).bind(Applicants::getBirthDate, Applicants::setBirthDate);
-//        FormLayout form = new FormLayout(newSurname, newFirstName, newPhone, newEmail, newCountry, newBirthDate);
-//        
-//        HorizontalLayout finalLayout = new HorizontalLayout(form);
         
         layout.setSpacing(true);
         setContent(layout);
@@ -135,7 +127,7 @@ public class VaadinUI extends UI {
         save.setVisible(visible);
         add.setVisible(visible);
         delete.setVisible(visible);
-
+       
     }
 
     private void saveApplicants() {
@@ -156,9 +148,11 @@ public class VaadinUI extends UI {
     }
 
     public void filterDatas() {
-
-        grid.setItems(service.findByInput(filterText.getValue()));
         
+        List<Applicants> applicant = service.find(filterText.getValue());
+         grid.setItems(applicant);
+     //updateGrid();
+       
     }
     public void deleteApplicants() {
         service.delete(applicants);

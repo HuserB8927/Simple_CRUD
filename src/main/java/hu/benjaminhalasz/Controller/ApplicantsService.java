@@ -18,9 +18,32 @@ import java.util.logging.Logger;
 public class ApplicantsService {
 
     
+//private EntityManager em;
+//
+//    CriteriaBuilder cb = em.getCriteriaBuilder();
+//    
+//    public List<Applicants> find() {
+//        return jdbcTemplate.query(
+//    "SELECT * FROM applicants WHERE id = ? "
+//            + "AND surname LIKE %?% AND firstName LIKE %?% "
+//            + "AND phone = ? AND email = ? "
+//            + "AND country = ? AND birthday = ? ",
+//            (rs, rowNum) -> new Applicants(
+//                        rs.getLong("id"), 
+//                        rs.getString("surname"), 
+//                        rs.getString("firstName"), 
+//                        rs.getString("phone"),
+//                        rs.getString("email"), 
+//                        rs.getString("country"), 
+//                        rs.getString("birthDate")));
+//    }
     
-    private final HashMap<Long, Applicants> applicants = new HashMap<>();
+    
+    //private final HashMap<Long, Applicants> applicants = new HashMap<>();
+    private static final Logger LOGGER = Logger.getLogger(ApplicantsService.class.getName());
     private static ApplicantsService instance;
+    private static Applicants applicant;
+    
     
     
     @Autowired
@@ -69,32 +92,37 @@ public class ApplicantsService {
 		return instance;
 	
     }
-    public synchronized List<Applicants> findByInput() {
-		return findByInput(null);
-	}
+//    public synchronized List<Applicants> find() {
+//		return find(null);
+//	}
 
-    public synchronized List<Applicants> findByInput(String stringFilter) {
+    public List<Applicants> find(String stringFilter) {
 		ArrayList<Applicants> arrayList = new ArrayList<>();
-		for (Applicants applicant : applicants.values()) {
-			try {
+                applicant = new Applicants(null, "","","","","","");
+                
+                String sql = "SELECT * FROM applicants WHERE surname LIKE  '%stringFilter%'";
+                        
+                
+		try {
 				boolean passesFilter = (stringFilter == null || stringFilter.isEmpty())
 						|| applicant.toString().toLowerCase().contains(stringFilter.toLowerCase());
 				if (passesFilter) {
-					arrayList.add(applicant.clone());
-				}
-			} catch (CloneNotSupportedException ex) {
-				Logger.getLogger(ApplicantsService.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
-		Collections.sort(arrayList, new Comparator<Applicants>() {
-
-			@Override
-			public int compare(Applicants a1, Applicants a2) {
-				return (int) (a2.getId() - a1.getId());
-			}
-		});
+					//arrayList.add(applicant.clone());
+                                        jdbcTemplate.update(findAll().toString());
+                            }
+                        arrayList.add(applicant.clone());
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(ApplicantsService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+				
+                                
+                
+		
 		return arrayList;
-	}
+    
+    }
+    
+    
 
     public void deleteAll(Applicants applicants) {
            String sql = "TRUNCATE TABLE applicants";
