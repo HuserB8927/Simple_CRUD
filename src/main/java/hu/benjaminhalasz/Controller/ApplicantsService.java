@@ -1,6 +1,9 @@
 
 package hu.benjaminhalasz.Controller;
+import hu.benjaminhalasz.GUI.VaadinUI;
 import hu.benjaminhalasz.Model.Applicants;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.jdbc.core.RowMapper;
 
 
 @Component
@@ -42,7 +46,7 @@ public class ApplicantsService {
     //private final HashMap<Long, Applicants> applicants = new HashMap<>();
     private static final Logger LOGGER = Logger.getLogger(ApplicantsService.class.getName());
     private static ApplicantsService instance;
-    private static Applicants applicant;
+    private static Applicants applicant = new Applicants(null, "", "", "", "", "", "");
     
     
     
@@ -98,26 +102,24 @@ public class ApplicantsService {
 
     public List<Applicants> find(String stringFilter) {
 		ArrayList<Applicants> arrayList = new ArrayList<>();
-                applicant = new Applicants(null, "","","","","","");
+              
                 
-                String sql = "SELECT * FROM applicants WHERE surname LIKE  '%stringFilter%'";
+                
                         
                 
 		try {
+                    String sql = "SELECT * FROM applicants WHERE surname LIKE '%k%'";
 				boolean passesFilter = (stringFilter == null || stringFilter.isEmpty())
 						|| applicant.toString().toLowerCase().contains(stringFilter.toLowerCase());
 				if (passesFilter) {
 					//arrayList.add(applicant.clone());
-                                        jdbcTemplate.update(findAll().toString());
-                            }
+                                        jdbcTemplate.update(sql);
+                            
                         arrayList.add(applicant.clone());
+                                }
                     } catch (CloneNotSupportedException ex) {
                         Logger.getLogger(ApplicantsService.class.getName()).log(Level.SEVERE, null, ex);
                     }
-				
-                                
-                
-		
 		return arrayList;
     
     }
@@ -134,4 +136,56 @@ public class ApplicantsService {
         jdbcTemplate.update(sql, applicants.getId());
     }
     
+    public void findByName(String filterText) {
+        
+        
+        String sql = "SELECT id, surname, firstName, phone, email, country, birthDay from applicants WHERE surname LIKE '%filterText%'";
+    
+    RowMapper mapper = (RowMapper) (ResultSet rs, int rowNum) -> 
+    {
+        Applicants applicants1 = new Applicants(null, "", "", "", "", "", "");
+            applicants1.setId(rs.getLong("id"));
+            applicants1.setSurname(rs.getString("surname"));
+            applicants1.setFirstName(rs.getString("firstName"));
+            applicants1.setPhone(rs.getString("phone"));
+            applicants1.setEmail(rs.getString("email"));
+            applicants1.setCountry(rs.getString("country"));
+            applicants1.setBirthDate(rs.getString("birthDate"));
+            return applicants1;
+        };
+        
+    
+            
+    }
 }
+
+            
+        // notice the cast, the wrapping up of the 'id' argument
+        // in an array, and the boxing of the 'id' argument as a reference type
+    
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+//        String sql = "SELECT * FROM applicants WHERE surname LIKE '%?%'";
+//        jdbcTemplate.update(sql,
+//                applicants.getSurname(), 
+//                applicants.getFirstName(),
+//                applicants.getPhone(), 
+//                applicants.getEmail(), 
+//                applicants.getCountry(), 
+//                applicants.getBirthDate());
+//    }
+//    
+//}

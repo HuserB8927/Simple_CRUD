@@ -68,6 +68,8 @@ public class VaadinUI extends UI {
         filtering.addComponents(filterText, clearFilterTextBtn);
         filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 
+       
+        
         addContact.setVisible(true);
         addContact.addClickListener(event -> addNewForm());
 
@@ -79,6 +81,7 @@ public class VaadinUI extends UI {
                 .withValidator(new EmailValidator("Are you sure the given value is an email address?"))
                 .bind(Applicants::getEmail, Applicants::setEmail);
 
+        
         HorizontalLayout actions = new HorizontalLayout(filtering, addContact, clearDatabase, export);
 
         HorizontalLayout saveAdd = new HorizontalLayout(save, add, delete);
@@ -149,9 +152,9 @@ public class VaadinUI extends UI {
 
     public void filterDatas() {
         
-        List<Applicants> applicant = service.find(filterText.getValue());
-         grid.setItems(applicant);
-     //updateGrid();
+            service.findByName(filterText.getValue());
+         
+     updateGrid();
        
     }
     public void deleteApplicants() {
