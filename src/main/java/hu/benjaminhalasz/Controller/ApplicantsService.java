@@ -1,16 +1,11 @@
 
 package hu.benjaminhalasz.Controller;
-import hu.benjaminhalasz.GUI.VaadinUI;
 import hu.benjaminhalasz.Model.Applicants;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -136,14 +131,14 @@ public class ApplicantsService {
         jdbcTemplate.update(sql, applicants.getId());
     }
     
-    public void findByName(String filterText) {
-        
+    public List<Applicants> findByName(String filterText) {
+        Applicants applicants1 = new Applicants(null, "", "", "", "", "", "");
         
         String sql = "SELECT id, surname, firstName, phone, email, country, birthDay from applicants WHERE surname LIKE '%filterText%'";
     
     RowMapper mapper = (RowMapper) (ResultSet rs, int rowNum) -> 
     {
-        Applicants applicants1 = new Applicants(null, "", "", "", "", "", "");
+        
             applicants1.setId(rs.getLong("id"));
             applicants1.setSurname(rs.getString("surname"));
             applicants1.setFirstName(rs.getString("firstName"));
@@ -153,15 +148,16 @@ public class ApplicantsService {
             applicants1.setBirthDate(rs.getString("birthDate"));
             return applicants1;
         };
+        return (List<Applicants>) (Applicants) jdbcTemplate.queryForObject(sql, mapper, new Object[] {String.valueOf("")});
         
     
             
     }
+ 
 }
 
             
-        // notice the cast, the wrapping up of the 'id' argument
-        // in an array, and the boxing of the 'id' argument as a reference type
+      
     
 
 

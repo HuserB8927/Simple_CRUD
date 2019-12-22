@@ -1,21 +1,29 @@
 package hu.benjaminhalasz.GUI;
 
+
 import hu.benjaminhalasz.Controller.ApplicantsService;
 import hu.benjaminhalasz.Model.Applicants;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
+
+
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
+
+
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 
 
+
 import java.util.List;
+import org.vaadin.haijian.Exporter;
 
 @SpringUI
 
@@ -41,7 +49,7 @@ public class VaadinUI extends UI {
     private Button addContact = new Button("Add Contact");
     private TextField filterText = new TextField();
     private Button clearDatabase = new Button("Clear Database", e -> deleteAll());
-    private Button export = new Button("Export Database");
+    private Button downloadAsExcel = new Button("Export Database", e -> exportExcel());
 
     @Override
     protected void init(VaadinRequest request) {
@@ -67,8 +75,10 @@ public class VaadinUI extends UI {
         CssLayout filtering = new CssLayout();
         filtering.addComponents(filterText, clearFilterTextBtn);
         filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
-
-       
+        
+        
+        
+        
         
         addContact.setVisible(true);
         addContact.addClickListener(event -> addNewForm());
@@ -82,7 +92,7 @@ public class VaadinUI extends UI {
                 .bind(Applicants::getEmail, Applicants::setEmail);
 
         
-        HorizontalLayout actions = new HorizontalLayout(filtering, addContact, clearDatabase, export);
+        HorizontalLayout actions = new HorizontalLayout(filtering, addContact, clearDatabase, downloadAsExcel);
 
         HorizontalLayout saveAdd = new HorizontalLayout(save, add, delete);
 
@@ -162,4 +172,10 @@ public class VaadinUI extends UI {
         updateGrid();
     
 }
+    public void exportExcel() {
+        StreamResource excelStreamResource = new StreamResource((StreamResource.StreamSource) () 
+                -> Exporter.exportAsExcel(grid), "my-excel.xlsx");
+        FileDownloader excelFileDownloader = new FileDownloader(excelStreamResource);
+        excelFileDownloader.extend(downloadAsExcel);
+    }
 }
