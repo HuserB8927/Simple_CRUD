@@ -1,15 +1,20 @@
-package hu.benjaminhalasz.GUI;
+package hu.benjaminhalasz.ui;
 
 
-import hu.benjaminhalasz.Controller.ApplicantsService;
-import hu.benjaminhalasz.Model.Applicants;
+
+import com.vaadin.annotations.StyleSheet;
+import hu.benjaminhalasz.service.ApplicantsService;
+import hu.benjaminhalasz.entity.Applicants;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.StreamResource;
 
 
 import com.vaadin.server.VaadinRequest;
@@ -23,11 +28,11 @@ import com.vaadin.ui.themes.ValoTheme;
 
 
 import java.util.List;
-import org.vaadin.haijian.Exporter;
 
+
+@CssImport("styles/style.css")
 @SpringUI
-
-public class VaadinUI extends UI {
+public class VaadinUI extends UI implements HasStyle {
 
     @Autowired
     private ApplicantsService service;
@@ -49,7 +54,7 @@ public class VaadinUI extends UI {
     private Button addContact = new Button("Add Contact");
     private TextField filterText = new TextField();
     private Button clearDatabase = new Button("Clear Database", e -> deleteAll());
-    private Button downloadAsExcel = new Button("Export Database", e -> exportExcel());
+ 
 
     @Override
     protected void init(VaadinRequest request) {
@@ -69,6 +74,7 @@ public class VaadinUI extends UI {
         filterText.addValueChangeListener(e -> filterDatas());
         
         Button clearFilterTextBtn = new Button(VaadinIcons.CLOSE);
+       
         clearFilterTextBtn.setDescription("Clear the current filter...");
         clearFilterTextBtn.addClickListener(e -> filterText.clear());
         
@@ -90,9 +96,10 @@ public class VaadinUI extends UI {
         binder.forField(email)
                 .withValidator(new EmailValidator("Are you sure the given value is an email address?"))
                 .bind(Applicants::getEmail, Applicants::setEmail);
+       
 
         
-        HorizontalLayout actions = new HorizontalLayout(filtering, addContact, clearDatabase, downloadAsExcel);
+        HorizontalLayout actions = new HorizontalLayout(filtering, addContact, clearDatabase);
 
         HorizontalLayout saveAdd = new HorizontalLayout(save, add, delete);
 
@@ -127,6 +134,7 @@ public class VaadinUI extends UI {
 
         binder.setBean(applicants);
         setFormVisible(true);
+        
 
     }
 
@@ -172,10 +180,10 @@ public class VaadinUI extends UI {
         updateGrid();
     
 }
-    public void exportExcel() {
-        StreamResource excelStreamResource = new StreamResource((StreamResource.StreamSource) () 
-                -> Exporter.exportAsExcel(grid), "my-excel.xlsx");
-        FileDownloader excelFileDownloader = new FileDownloader(excelStreamResource);
-        excelFileDownloader.extend(downloadAsExcel);
+
+    @Override
+    public Element getElement() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
 }

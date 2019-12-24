@@ -1,6 +1,6 @@
 
-package hu.benjaminhalasz.Controller;
-import hu.benjaminhalasz.Model.Applicants;
+package hu.benjaminhalasz.service;
+import hu.benjaminhalasz.entity.Applicants;
 import java.sql.ResultSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
